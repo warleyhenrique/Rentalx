@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  database_iginite:
+    image: postgres
+    container_name: database_ignite
+    restart: always
+    network_mode: host
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=ignite
+      - POSTGRES_DB=rentx
+    volumes:
+      - pgdata:/data/postgres
+  app:
+    build: .
+    container_name: rentx
+    network_mode: host
+    volumes: 
+      - .:/usr/app
+volumes: 
+  pgdata:
+    driver: local

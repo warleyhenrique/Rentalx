@@ -13,7 +13,7 @@ class CreateSpecificationService {
       this.specificationsRepository.findByName(name);
 
     if (specificationAlreadyExists) {
-      throw new Error("Specification already exists!");
+      throw new Error();
     }
 
     this.specificationsRepository.create({
