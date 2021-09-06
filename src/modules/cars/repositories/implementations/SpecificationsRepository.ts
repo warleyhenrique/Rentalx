@@ -18,7 +18,7 @@ class SpecificationRepository implements ISpecificationsRepository {
   }
 
   async findByName(name: string): Promise<Specification> {
-    const specification = this.repository.findOne({name});
+    const specification = await this.repository.findOne({name});
     return specification;
   }
 
@@ -29,7 +29,7 @@ class SpecificationRepository implements ISpecificationsRepository {
       description
     });
 
-    this.repository.save(specification);
+    await this.repository.save(specification);
   }
 }
 
