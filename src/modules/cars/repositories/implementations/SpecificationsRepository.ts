@@ -1,3 +1,4 @@
+import { getRepository, Repository } from 'typeorm';
 import { Specification } from "../../entities/Specification";
 import {
   ICreateSpecificationsDTO,
@@ -5,40 +6,30 @@ import {
 } from "../ISpecificationsRepository";
 
 class SpecificationRepository implements ISpecificationsRepository {
-  private specifications: Specification[];
-
-  private static INSTANCE: SpecificationRepository;
+  private repository: Repository<Specification>
 
   constructor() {
-    this.specifications = [];
+    this.repository = getRepository(Specification);
   }
 
-  public static getInstance(): SpecificationRepository {
-    if (!SpecificationRepository.INSTANCE) {
-      SpecificationRepository.INSTANCE = new SpecificationRepository();
-    }
-    return SpecificationRepository.INSTANCE;
+  async list(): Promise<Specification[]> {
+    const specifications = await this.repository.find();
+    return specifications;
   }
 
-  list(): Specification[] {
-    return this.specifications;
-  }
-
-  findByName(name: string): Specification {
-    const specification = this.specifications.find((spc) => spc.name === name);
+  async findByName(name: string): Promise<Specification> {
+    const specification = this.repository.findOne({name});
     return specification;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  create({ name, description }: ICreateSpecificationsDTO): void {
-    const specification = new Specification();
-    Object.assign(specification, {
+  async create({ name, description }: ICreateSpecificationsDTO): Promise<void> {
+    const specification = this.repository.create({
       name,
-      description,
-      created_at: new Date(),
+      description
     });
 
-    this.specifications.push(specification);
+    this.repository.save(specification);
   }
 }
 
